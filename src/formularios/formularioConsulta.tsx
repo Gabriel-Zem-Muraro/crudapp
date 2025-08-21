@@ -2,13 +2,20 @@ import Botao from "@/componentes/botao"
 import CamposDeTexto from "@/componentes/camposDeTexto"
 import { useState } from "react"
 
-export default function FormularioAdd () {
+interface FormularioConsultaProps {
+  onConsultar: (id: string) => void;
+}
+
+export default function FormularioConsulta ({ onConsultar }: FormularioConsultaProps) {
 
   const [id, setId] = useState('')
   
   const aoSalvar = (eventoQueAcontecera: any) => {
     eventoQueAcontecera.preventDefault()
-    console.log('Foi submetido', id);
+    if(id.trim()) { // Verifica se o que foi digitado não está vazio
+      console.log('O id ', id, ' foi enviado');
+      onConsultar(id.trim()) //Envia o id sem espaços
+    }
   }
 
   return(

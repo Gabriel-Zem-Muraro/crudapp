@@ -6,10 +6,13 @@ import FormularioConsulta from '@/formularios/formularioConsulta';
 import FormularioDeletar from '@/formularios/formularioDeletar';
 import FormularioAtualizaParcial from '@/formularios/formularioAtualizaParcial'
 import FormularioAtualizaTotal from '@/formularios/formularioAtualizaTotal'
+import { userService } from '@/services/userService';
 export default function Home() {
 
 /*CONSULTAR ID*/
-  const [setMostrarFormularioConsultaEBotaoConsultaId, setMostrarFormularioConsultaId] = useState(false)
+  const [setMostrarFormularioConsultaEBotaoConsultaId, setMostrarFormularioConsultaId] = useState(false) //Mostra o formulario para digitar o ID
+  const [dadosUsuario, setDadosUsuario] = useState(null) //Armazena os dados do usuário retornados pela api na variavel dadosUsuario
+  const [erro, setErro] = useState('') //Armazena a mensagem de erro tratada na api se falhar
 
 /*CRIAR*/
   const [mostrarFormularioEBotaoCria, setMostrarFormularioCria] = useState(false)
@@ -26,11 +29,28 @@ export default function Home() {
 
 /*MUDA O ESTADO DO FORMULARIO CONSULTAR ID*/ 
   const handleConsultaIdClick = () => {
-    setMostrarFormularioConsultaId(true) 
+    setMostrarFormularioConsultaId(true) //Faz abrir o formulario na tela
+    setDadosUsuario(null) //Limpa os dados enviados pela api anteriormente
+    setErro('')//Limpa a mensagem de erro também
   }
   const handleVoltaConsulta = () => {
     setMostrarFormularioConsultaId(false) 
   }
+
+  /*FUNÇÃO PARA CONSULTAR USUÁRIO POR ID*/
+const consultarUsuario = async (id: string) => { //Recebe o id como contexto
+  setErro('') //Limpa os erros anteriores
+  try {
+    const usuario = await userService.getById(parseInt(id)) //Puxa a função getById da pasta userService 
+    //Chama a api e aguarda a resposta na variavel dadosUsuarios por causa que foi chamada a funcao setDadosUsuarios
+    setDadosUsuario(usuario)
+    console.log('Usuário encontrado:', usuario)
+  } catch (error: any) {
+    console.error('Erro ao consultar usuário:', error)
+    setErro(error.response?.data?.message || 'Erro ao consultar usuário')
+    setDadosUsuario(null)
+}
+}
 
 /*MUDA O ESTADO DO FORMULARIO CRIAR*/ 
   const handleCriarClick = () => {
@@ -79,17 +99,13 @@ const handleVoltaAtualizaT = () => {
         </section>
 
         {/*MOSTRAR FORMULARIO PARA CONSULTAR ID*/}
-          {setMostrarFormularioConsultaEBotaoConsultaId && <FormularioConsulta/>}
-
+        {setMostrarFormularioConsultaEBotaoConsultaId && <FormularioConsulta onConsultar={consultarUsuario} />}
         {/*MOSTRAR FORMULARIO PARA CRIAR*/}
-          {mostrarFormularioEBotaoCria && <FormularioAdd/>}
-
+        {mostrarFormularioEBotaoCria && <FormularioAdd/>}
         {/*MOSTRAR FORMULARIO PARA DELETAR*/}
-          {mostrarFormularioEBotaoDeletar && <FormularioDeletar/>}
-
+        {mostrarFormularioEBotaoDeletar && <FormularioDeletar/>}
         {/*MOSTRAR FORMULARIO PARA ATUALIZAR PARCIAL*/}
         {mostrarFormularioEBotaoAtualizaParcial && <FormularioAtualizaParcial/>}
-
         {/*MOSTRAR FORMULARIO PARA ATUALIZAR TOTAL*/}
         {mostrarFormularioEBotaoAtualizaTotal && <FormularioAtualizaTotal/>}
           
@@ -97,18 +113,15 @@ const handleVoltaAtualizaT = () => {
 
             {/*ESCONDE FORMULARIO PARA CONSULTAR ID*/}
             {setMostrarFormularioConsultaEBotaoConsultaId && <Botao name="Voltar consulta" value='voltar' onClick={handleVoltaConsulta}/>}
-
             {/*ESCONDE FORMULARIO PARA CONSULTAR*/}
             {mostrarFormularioEBotaoCria && <Botao name="Voltar Criar" value='voltar' onClick={handleVoltarCria}/>}
-
             {/*ESCONDE FORMULARIO PARA DELETAR*/}
             {mostrarFormularioEBotaoDeletar && <Botao name="Voltar Deletar" value='voltar' onClick={handleVoltaDeleta}/>}
-
             {/*ESCONDE FORMULARIO PARA ATUALIZAR PARCIAL*/}
             {mostrarFormularioEBotaoAtualizaParcial && <Botao name="Voltar Atualizar Parcial" value='voltar' onClick={handleVoltaAtualizaP}/>}
-
             {/*ESCONDE FORMULARIO PARA ATUALIZAR TOTAL*/}
             {mostrarFormularioEBotaoAtualizaTotal && <Botao name="Voltar Atualizar Total" value='voltar' onClick={handleVoltaAtualizaT}/>}
+
           </div>
       </main>
     </div>
