@@ -1,8 +1,13 @@
+import { log } from "console";
+import { useState } from "react";
+
 export default function CamposDeTexto (props: any) {
 
   const aoDigitado = (evento: any) => {
-    props.aoAlterado(evento.target.value)
+    props.aoAlterado(evento.target.value) 
   }
+
+
   return(
     <div className="text-white">
       <div className="flex flex-col gap-2 m-2">
