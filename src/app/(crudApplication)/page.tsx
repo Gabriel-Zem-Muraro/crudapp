@@ -1,6 +1,6 @@
 'use client' 
 import { useState } from 'react'
-import Botao from "../componentes/botao";
+import Botao from "../../componentes/botao";
 import FormularioAdd from "@/formularios/formularioAdd";
 import FormularioConsulta from '@/formularios/formularioConsulta';
 import FormularioDeletar from '@/formularios/formularioDeletar';

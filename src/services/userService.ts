@@ -9,6 +9,41 @@ const api = axios.create({
   },
 });
 
+// Interceptor para adicionar automaticamente o token de autenticação
+api.interceptors.request.use(
+  (config) => {
+    // Pegar o token do localStorage
+    const token = localStorage.getItem('authToken');
+    
+    if (token) {
+      // Adicionar o token ao cabeçalho Authorization
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Interceptor para lidar com erros de resposta (opcional)
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Se receber 401 (não autorizado), limpar o token e redirecionar para login
+    if (error.response?.status === 401) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userData');
+      window.location.href = '/login';
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 export const userService = {
   // GET /user/:id - Buscar usuário por ID
   getById: async (id: number) => {
@@ -48,3 +83,5 @@ export const userService = {
     return response.data;
   }
 };
+
+export { api };
