@@ -25,16 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
         <AuthProvider>
         <ProtectedRoute>
           {children}
         </ProtectedRoute>
         </AuthProvider>
-      </body>
-    </html>
   );
 }
+
+//Apenas o layout raiz deve conter as tags <html> e <body>. 
+//Os layouts filhos devem retornar somente o conteúdo que vai dentro do <body>.
