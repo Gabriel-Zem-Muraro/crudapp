@@ -13,7 +13,6 @@ export default function FormularioConsulta ({ onConsultar }: FormularioConsultaP
   const aoSalvar = (eventoQueAcontecera: any) => {
     eventoQueAcontecera.preventDefault()
     if(id.trim()) { // Verifica se o que foi digitado não está vazio
-      console.log('O id ', id, ' foi enviado');
       onConsultar(id.trim()) //Envia o id sem espaços
     }
   }
